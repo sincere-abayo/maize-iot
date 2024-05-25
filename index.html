@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Turn Red LED On/Off</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        button {
+            font-size: 24px;
+            padding: 10px 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Turn Red LED On/Off</h1>
+    <button id="toggleButton">Toggle LED</button>
+
+    <script>
+        const button = document.getElementById('toggleButton');
+        let ledState = localStorage.getItem('ledState') || 'off';
+        button.textContent = `Turn LED ${ledState === 'off' ? 'On' : 'Off'}`;
+        button.style.backgroundColor = ledState === 'off' ? 'green' : 'red';
+        
+        button.addEventListener('click', () => {
+            const newState = ledState === 'off' ? 'on' : 'off';
+            fetch(`toggle_led.php?action=${newState}`)
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    button.textContent = `Turn LED ${newState === 'off' ? 'On' : 'Off'}`;
+                    button.style.backgroundColor = newState === 'off' ? 'green' : 'red';
+                    localStorage.setItem('ledState', newState);
+                    location.reload();
+                })
+                .catch(error => console.error(error));
+        });
+    </script>
+</body>
+</html>
