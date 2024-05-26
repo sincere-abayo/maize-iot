@@ -9,6 +9,6 @@
 # create database called maize
 # import maize.sql to database maize
 # login and access dashboard
-# email: admin@gmail.com 
+# email: admin1@gmail.com 
 # password: admin123
 
