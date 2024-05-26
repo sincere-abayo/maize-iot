@@ -1,4 +1,4 @@
-#include <ESP8266WiFi.h>
+  #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WebServer.h>
 #include <WiFiClient.h>
@@ -13,7 +13,7 @@
 #define greenLedPin D5 // Define relay green red pin pin for wifi indicator
 #define redLedPin D8 // Define relay green red pin pin for wifi indicator
 
-const char* ssid = "CANALBOX-333B-2G"; // set wifi name
+const char* ssid = "CANALBOX-333B-2G"; // set wifi name 
 const char* password = "Idatech@02525"; //set wifi password
 
 const char* serverName = "http://192.168.1.65/maize/post.php/"; //set public address of ip v4 with path/project
@@ -33,7 +33,7 @@ void handleRoot() {
 void handleOn() {
   digitalWrite(RELAY_PIN, HIGH);
   server.send(200, "text/plain", "Relay turned on");
-  acStatus="ON";
+//  acStatus="ON";
 }
 
 void handleOff() {
@@ -46,9 +46,11 @@ void sendSensor() {
   int temperature = 0;
   int humidity = 0;
 
+
   // Attempt to read the temperature and humidity values from the DHT11 sensor.
   int result = dht11.readTemperatureHumidity(temperature, humidity);
-
+   
+   humidity = humidity-25;
   // Clear the LCD before writing new data
   lcd.clear();
 
@@ -58,11 +60,11 @@ void sendSensor() {
    
     // Send the data to the server
     if (WiFi.status() == WL_CONNECTED) {
-      if (temperature < 10) {
-         if(acStatus == "ON"){
-          digitalWrite(RELAY_PIN, LOW);
+      if (temperature <= 11) {
+//         if(acStatus == "ON"){
+          digitalWrite(RELAY_PIN, HIGH);
            acStatus = "OFF";
-        }
+//        }
        
         
       
@@ -70,13 +72,13 @@ void sendSensor() {
         lcd.setCursor(0, 0);
         lcd.print("Ac status: ");
         lcd.print(acStatus);
-      } if(temperature >15) {
+      } if(temperature >=15) {
        
         Serial.println("Status on");
-        if(acStatus == "ON"){
-          digitalWrite(RELAY_PIN, HIGH);
+//        if(acStatus == "ON"){
+          digitalWrite(RELAY_PIN, LOW);
            acStatus = "ON";
-        }
+//        }
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("AC status: ");
@@ -134,6 +136,7 @@ void setup() {
    pinMode(redLedPin, OUTPUT);
   pinMode(DHTVCCPIN, OUTPUT);
   pinMode(RELAY_PIN, OUTPUT);
+   digitalWrite(RELAY_PIN, LOW);
   digitalWrite(DHTVCCPIN, HIGH);
    digitalWrite(redLedPin, HIGH); //set red LED ONN when device pluged onn
   Serial.begin(9600); // Initialize serial communication for debugging
